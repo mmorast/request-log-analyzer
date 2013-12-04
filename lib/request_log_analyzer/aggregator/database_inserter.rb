@@ -32,15 +32,20 @@ module RequestLogAnalyzer::Aggregator
     # This will create a record in the requests table and create a record for every line that has been parsed,
     # in which the captured values will be stored.
     def aggregate(request)
+
       @request_object = RequestLogAnalyzer::Database::Request.new(:first_lineno => request.first_lineno, :last_lineno => request.last_lineno)
       request.lines.each do |line|
         class_columns = database.get_class(line[:line_type]).column_names.reject { |column| ['id', 'source_id', 'request_id'].include?(column) }
         attributes = Hash[*line.select { |(key, _)| class_columns.include?(key.to_s)}.flatten]
-        
-        # Fix encoding patch for 1.9.2
+
+
+            # Fix encoding patch for 1.9.2
         attributes.each do |k,v|
           attributes[k] = v.force_encoding("UTF-8") if v.is_a?(String) && "".respond_to?("force_encoding")
         end
+
+        attributes['source_id'] =  @sources[line[:source]].attributes['id']
+
 
         @request_object.send("#{line[:line_type]}_lines").build(attributes)
       end

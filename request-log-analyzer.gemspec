@@ -30,8 +30,9 @@ Gem::Specification.new do |gem|
 
   gem.requirements << "To use the database inserter, ActiveRecord and an appropriate database adapter are required."
   gem.add_development_dependency('rake')
+    gem.add_development_dependency('pry-debugger')
   gem.add_development_dependency('rspec', '~> 2.14')
-  gem.add_development_dependency('activerecord')
+  gem.add_development_dependency('activerecord', '~>3.2.15')
   if defined?(JRUBY_VERSION)
     gem.add_development_dependency('jdbc-sqlite3')
     gem.add_development_dependency('jdbc-mysql')
